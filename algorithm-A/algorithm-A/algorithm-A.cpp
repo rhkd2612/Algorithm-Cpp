@@ -4,12 +4,16 @@
 
 using namespace std;
 
-#define SMAX 1000005
 #define PMAX 10005
 
+// save result
 vector<int> res;
+
+// input sentence s, pattern p
 string s, p;
+// size of string s & p
 int n, m;
+// pattern failure function
 int pi[PMAX];
 
 void init() {
@@ -19,6 +23,7 @@ void init() {
 	m = p.length();
 }
 
+// get failure function
 void getPI() {
 	int i, j = 0;
 	pi[0] = 0;
@@ -31,21 +36,50 @@ void getPI() {
 	}
 }
 
+// get KMP
 void kmp() {
 	int j = 0;
-
-	for (int i = 0; i < n; i++) {
-		while (j > 0 && s[i] != p[j])
-			j = pi[j - 1];
+	for (int i = 0; i < n;) {
 		if (s[i] == p[j]) {
 			if (j == m - 1) {
-				res.push_back(i - m + 1);
-				j = pi[j];
+				// save result
+				res.push_back(i - j);
+
+				// if size of pattern is 1
+				if (j == 0) {
+					cout << "1 ";
+					i++;
+				}
+				else {
+
+					if (s[i] == p[pi[j - 1]])
+						cout << j - pi[j - 1] << ' ';
+					else {
+						cout << j - pi[j - 1] + 1 << ' ';
+						i++;
+					}
+					j = pi[j - 1];
+				}
 			}
-			else
+			else {
+				i++;
 				j++;
+			}
+		}
+		else {
+			// if size of pattern is 1
+			if (j == 0) {
+				i++;
+				cout << "1 ";
+			}
+			else {
+				cout << j - pi[j - 1] << ' ';
+				j = pi[j - 1];
+			}
 		}
 	}
+
+	cout << '\n';
 }
 
 void print() {
